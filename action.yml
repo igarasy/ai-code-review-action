@@ -1,0 +1,75 @@
+name: AI Code Review (Claude)
+description: Reviews pull requests with Claude and posts inline comments on the changed lines. Configurable, incremental and cost-aware.
+author: Lucas Igarashi
+branding:
+  icon: eye
+  color: gray-dark
+
+inputs:
+  anthropic-api-key:
+    description: Anthropic API key. Store it as a repository secret.
+    required: true
+  github-token:
+    description: Token used to read the PR and post the review. Needs pull-requests:write.
+    required: false
+    default: ${{ github.token }}
+  model:
+    description: Claude model ID (e.g. claude-opus-5-5, claude-sonnet-5-5, claude-haiku-5-5).
+    required: false
+    default: claude-opus-5-5
+  effort:
+    description: "Reasoning effort: low, medium, high, xhigh or max."
+    required: false
+    default: medium
+  language:
+    description: "Language of the review: en or pt-BR."
+    required: false
+    default: en
+  min-severity:
+    description: "Lowest severity to post: low, medium, high or critical."
+    required: false
+    default: medium
+  max-findings:
+    description: Maximum number of findings per review (1-50).
+    required: false
+    default: "10"
+  max-diff-chars:
+    description: Character budget of diff sent to the model. Larger files beyond it are skipped and listed.
+    required: false
+    default: "120000"
+  include:
+    description: Glob patterns to review (comma or newline separated). Empty = everything.
+    required: false
+    default: ""
+  exclude:
+    description: Extra glob patterns to skip, added to the built-in list (lockfiles, dist, minified, binaries).
+    required: false
+    default: ""
+  instructions-file:
+    description: Repository guidelines for the reviewer, read from the base branch.
+    required: false
+    default: .github/ai-review.md
+  fail-on:
+    description: "Fail the check when a finding reaches this severity: none, low, medium, high or critical."
+    required: false
+    default: none
+  skip-drafts:
+    description: Skip draft pull requests.
+    required: false
+    default: "true"
+  incremental:
+    description: On new pushes, review only files changed since the last reviewed commit.
+    required: false
+    default: "true"
+
+outputs:
+  findings-count:
+    description: Findings kept after the severity filter.
+  inline-count:
+    description: Findings posted as inline comments.
+  cost-usd:
+    description: Estimated API cost of the run in USD (empty for unknown models).
+
+runs:
+  using: node24
+  main: dist/index.cjs

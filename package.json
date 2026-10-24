@@ -1,0 +1,32 @@
+{
+  "name": "ai-code-review-action",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub Action that reviews pull requests with Claude and posts inline comments on the changed lines.",
+  "license": "MIT",
+  "author": "Lucas Igarashi <igarasshi.lucass@gmail.com> (https://igarasy.dev)",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node24 --format=cjs --outfile=dist/index.cjs --legal-comments=external",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "@actions/core": "^3.0.1",
+    "@actions/github": "^9.1.1",
+    "@anthropic-ai/sdk": "^1.3.0",
+    "minimatch": "^10.2.6",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.28.2",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}
